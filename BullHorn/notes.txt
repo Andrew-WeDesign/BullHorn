@@ -1,0 +1,206 @@
+﻿        
+        
+        
+        
+        //using (var context = new BullContext())
+        //{
+        //    var ticker = new Ticker
+        //    {
+        //        Id = 1,
+        //        Symbol = "AAPL"
+        //    };
+        //    context.Add(ticker);
+        //    context.SaveChanges();
+        //}
+
+        when used in main does print out the correct symbol
+        //using (var context = new BullContext())
+        //{
+        //    foreach(var ticker in context.Tickers)
+        //    {
+        //        Console.WriteLine(ticker.Symbol);
+        //    }
+        //}
+
+
+        public static async Task GetDailyAdjusted()
+        {
+            var symbol = "IBM";
+            var dailyPrices = $"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={symbol}&apikey=demo&datatype=csv"
+                        .GetStringFromUrl().FromCsv<List<AlphaVantageData>>();
+
+            Console.WriteLine(dailyPrices[0].Close);
+
+        }
+
+        //public class AlphaVantageData
+        //{
+        //    public DateTime Timestamp { get; set; }
+        //    public decimal Open { get; set; }
+
+        //    public decimal High { get; set; }
+        //    public decimal Low { get; set; }
+
+        //    public decimal Close { get; set; }
+        //    public decimal Volume { get; set; }
+        //}
+
+        //public static async Task GetDailyAdjusted()
+        //{
+        //    var symbol = "IBM";
+        //    var dailyPrices = $"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={symbol}&apikey=demo&datatype=csv"
+        //                .GetStringFromUrl().FromCsv<List<AlphaVantageData>>();
+
+        //    int cnt = dailyPrices.Count;
+        //    for (int i = 0; i < cnt; i++)
+        //    {
+        //        Console.WriteLine(dailyPrices[i].Close);
+        //    }
+
+        //}
+
+        static async Task RunAsync()
+        {
+            var importer = new AlphaVantageImporter("1Q633XY7FRIQL1BT");
+            var candles = await importer.ImportAsync("TSLA");
+            var last = candles.Sma(9).Last();
+            Console.WriteLine($"{last.DateTime}, {last.Tick}");
+            foreach (var c in candles)
+            {
+                Console.WriteLine(c.Close);
+            }
+        }
+
+
+        //public static async Task GetDailyAdjusted(List<Ticker> symbols)
+        //{
+        //    using (var context = new BullContext())
+        //    {
+        //        foreach (Ticker symbol in symbols)
+        //        {
+        //            var candles = $"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={symbol.Symbol}&apikey=1Q633XY7FRIQL1BT&datatype=csv"
+        //                       .GetStringFromUrl().FromCsv<List<AlphaVantageData>>();
+
+        //            int cnt = candles.Count;
+        //            for (int i = 0; i < cnt; i++)
+        //            {
+        //                DailyOHLC ohlc = new DailyOHLC();
+        //                ohlc.UnqCode = $"{symbol.Symbol}{candles[i].Timestamp}";
+        //                var test = await context.DailyOHLCs
+        //                    .Where(x => x.UnqCode == ohlc.UnqCode)
+        //                    .FirstOrDefaultAsync();
+        //                if (test != null)
+        //                {
+        //                    continue;
+        //                }
+        //                else
+        //                {
+        //                    ohlc.Open = candles[i].Open;
+        //                    ohlc.High = candles[i].High;
+        //                    ohlc.Low = candles[i].Low;
+        //                    ohlc.Close = candles[i].Close;
+        //                    ohlc.Volume = candles[i].Volume;
+        //                    ohlc.Date = candles[i].Timestamp;
+        //                    ohlc.Symbol = symbol.Symbol;
+
+        //                    context.DailyOHLCs.Add(ohlc);
+        //                    context.SaveChanges();
+
+        //                    Console.WriteLine(symbol.Symbol);
+        //                    Console.WriteLine(candles[i].Close);
+
+        //                }
+        //            }
+
+        //            await Task.Delay(1 * 12 * 1000);
+        //        }
+        //    }
+        //}
+
+                public static async Task<bool> GetHolidaysAsync(DateTime dateTime)
+        {
+            var httpClient = HttpClientFactory.Create();
+
+            var url = "https://api.polygon.io/v1/marketstatus/upcoming?&apiKey=vnJMu0xq4kBkjKi5sxzO2cICg_4eGRK9";
+            HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(url);
+            if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+            {
+                var content = httpResponseMessage.Content;
+                var data = await content.ReadAsAsync<MarketHolidays>();
+
+                List<int> dataList = data.Where(x => x.Date).ToList();
+                foreach (var d in dataList)
+                {
+
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Polygon.IO Error: " + httpResponseMessage.StatusCode);
+            }
+        }
+
+//using ServiceStack;
+//using System;
+//using System.Collections.Generic;
+//using System.Text;
+
+//namespace BullHorn
+//{
+//    public class OpenDays
+//    {
+//        public DateTime LastBusinessDay()
+//        {
+//            DateTime yesterdayDate = DateTime.Today.AddDays(-1);
+//            DayOfWeek yesterday = DateTime.Today.AddDays(-1).DayOfWeek;
+//            DayOfWeek yesterdayLessOne = DateTime.Today.AddDays(-2).DayOfWeek;
+
+//        }
+
+//        public static bool GetHolidays(DateTime dateTime)
+//        {
+//            var data = $"https://api.polygon.io/v1/marketstatus/upcoming?&apiKey=vnJMu0xq4kBkjKi5sxzO2cICg_4eGRK9"
+//                        .GetStringFromUrl().FromJson<List<MarketHolidays>>();
+//            if (data != null)
+//            {
+//                int cnt = data.Count;
+//                for (int i = 0; i < cnt; i++)
+//                {
+//                    if (dateTime.Date == data[i].Date)
+//                    {
+//                        return true;
+//                    }
+//                    else
+//                    {
+//                        return false;
+//                    }
+//                }
+//            }
+//            else
+//            {
+//                return false;
+//            }
+//            return false;
+//        }
+//    }
+
+//    class MarketHolidays
+//    {
+//        public string Exchange { get; set; }
+//        public string Name { get; set; }
+//        public DateTime Date { get; set; }
+//        public string Status { get; set; }
+//    }
+//}
+
+
+                        IReadOnlyList<IOhlcv> candles;
+                        var importerFull = new AlphaVantageImporter("1Q633XY7FRIQL1BT", OutputSize.full);
+                        try 
+                        {
+                            candles = await importerFull.ImportAsync(symbol.Symbol, dThen);
+                        }
+                        catch (BadData)
+                        {
+
+                        }

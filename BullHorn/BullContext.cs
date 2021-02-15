@@ -10,8 +10,10 @@ namespace BullHorn
     {
         public DbSet<Ticker> Tickers { get; set; }
         public DbSet<DailyOHLC> DailyOHLCs { get; set; }
+        public DbSet<BullList> BullLists { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseMySql("server=localhost;user=root;database=bullhorntest;port=3306;Connect Timeout=5");
+            => options.UseMySql("server=localhost;user=root;database=bullbot;port=3306;Connect Timeout=5");
     }
 
     public class Ticker
@@ -36,7 +38,20 @@ namespace BullHorn
         public decimal SMA180Daily { get; set; }
         public decimal EMA20Daily { get; set; }
         public decimal RSI12Daily { get; set; }
+        public decimal MacdLine { get; set; }
+        public decimal SignalLine { get; set; }
+        public decimal MacdHistogram { get; set; }
+        public decimal UpperBand { get; set; }
+        public decimal MiddleBand { get; set; }
+        public decimal LowerBand { get; set; }
+        public decimal Obv { get; set; }
     }
-
+    public class BullList
+    {
+        public int Id { get; set; }
+        public string Symbol { get; set; }
+        public string Reason { get; set; }
+        public DateTime DateAdded { get; set; }
+    }
 
 }

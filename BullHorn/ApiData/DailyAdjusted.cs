@@ -62,6 +62,9 @@ namespace BullHorn.ApiData
                         var sma180 = candles.Sma(180);
                         var ema20 = candles.Ema(20);
                         var rsi12 = candles.Rsi(12);
+                        var macd = candles.Macd(12, 26, 9);
+                        var bbands = candles.Bb(20, 2);
+                        var obv = candles.Obv();
 
                         int cnt = candles.Count;
                         for (int i = 0; i < cnt; i++)
@@ -92,15 +95,26 @@ namespace BullHorn.ApiData
                                     ohlc.EMA20Daily = (decimal)ema20[i].Tick;
                                 if (rsi12[i].Tick != null)
                                     ohlc.RSI12Daily = (decimal)rsi12[i].Tick;
+                                if (macd[i].Tick.MacdLine != null)
+                                    ohlc.MacdLine = (decimal)macd[i].Tick.MacdLine;
+                                if (macd[i].Tick.SignalLine != null)
+                                    ohlc.SignalLine = (decimal)macd[i].Tick.SignalLine;
+                                if (macd[i].Tick.MacdHistogram != null)
+                                    ohlc.MacdHistogram = (decimal)macd[i].Tick.MacdHistogram;
+                                if (bbands[i].Tick.UpperBand != null)
+                                    ohlc.UpperBand = (decimal)bbands[i].Tick.UpperBand;
+                                if (bbands[i].Tick.MiddleBand != null)
+                                    ohlc.MiddleBand = (decimal)bbands[i].Tick.MiddleBand;
+                                if (bbands[i].Tick.LowerBand != null)
+                                    ohlc.LowerBand = (decimal)bbands[i].Tick.LowerBand;
+                                if (obv[i].Tick != null)
+                                    ohlc.Obv = (decimal)obv[i].Tick;
                                 context.DailyOHLCs.Add(ohlc);
                                 context.SaveChanges();
-
-                                //Console.WriteLine(symbol.Symbol);
-                                //Console.WriteLine(candles[i].Close);
-
                             }
                         }
-                        Console.WriteLine($"Finished adding data for {symbol.Symbol}.");
+                        Console.WriteLine($"Finished updating data for {symbol.Symbol}.");
+                        Console.WriteLine("Waiting to prevent reaching limit of API calls");
                         await Task.Delay(1 * 12 * 1000);
                     }
                 }

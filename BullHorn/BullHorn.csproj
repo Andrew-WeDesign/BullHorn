@@ -6,23 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20210210205932_InitialVersion.cs" />
-    <Compile Remove="Migrations\20210210205932_InitialVersion.Designer.cs" />
-    <Compile Remove="Migrations\20210211115903_InitialVersion.cs" />
-    <Compile Remove="Migrations\20210211115903_InitialVersion.Designer.cs" />
-    <Compile Remove="Migrations\20210211120407_InitialVersion.cs" />
-    <Compile Remove="Migrations\20210211120407_InitialVersion.Designer.cs" />
-    <Compile Remove="Migrations\20210211120605_InitialVersion.cs" />
-    <Compile Remove="Migrations\20210211120605_InitialVersion.Designer.cs" />
-    <Compile Remove="Migrations\20210211121401_SecondVersion.cs" />
-    <Compile Remove="Migrations\20210211121401_SecondVersion.Designer.cs" />
-    <Compile Remove="Migrations\20210211121444_InitialVersion.cs" />
-    <Compile Remove="Migrations\20210211121444_InitialVersion.Designer.cs" />
-    <Compile Remove="Migrations\20210211124814_InitialVersion.cs" />
-    <Compile Remove="Migrations\20210211124814_InitialVersion.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.11">
